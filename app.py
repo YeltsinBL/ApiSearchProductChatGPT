@@ -1,16 +1,18 @@
 """Archivo Principal"""
 import os
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 
+load_dotenv()
+
 app = Flask(__name__)
-app.config["MYSQL_USER"] = "root"
-app.config["MYSQL_PASSWORD"] = "mysql123"
-app.config["MYSQL_HOST "] = "localhost"
-app.config["MYSQL_PORT "] = 3306
-app.config["MYSQL_DB"] = "ecommerce"
-app.config["MYSQL_CURSORCLASS"] = "DictCursor"
+app.config["MYSQL_USER"] = os.environ['MYSQL_USER']
+app.config["MYSQL_PASSWORD"] = os.environ['MYSQL_PASSWORD']
+app.config["MYSQL_HOST "] = os.environ['MYSQL_HOST']
+app.config["MYSQL_PORT "] = os.environ['MYSQL_PORT']
+app.config["MYSQL_DB"] = os.environ['MYSQL_DATABASE']
+app.config["MYSQL_CURSORCLASS"] = os.environ['MYSQL_CURSORCLASS']
 
 mysql=MySQL(app)
 
@@ -63,7 +65,7 @@ def products():
                 add_where += "order by popularidad desc"
                 print(request.args.get('popularidad'))
         cur = mysql.connection.cursor()
-        sql_consulta ="""select id, nombre, descripcion, precio, stock, en_oferta, descuento, popularidad from productos """+add_where
+        sql_consulta ="""select id, nombre, descripcion, precio, stock, en_oferta, descuento, popularidad from ecommerce.productos """+add_where
         print(sql_consulta)
         cur.execute(sql_consulta)
         result = cur.fetchall()
@@ -81,7 +83,7 @@ def product_by_id(id):
     try:
         cur = mysql.connection.cursor()
         cur.execute("""select id, nombre, descripcion, precio, stock\
-                     from productos where id='{0}'""".format(int(id)))
+                     from ecommerce.productos where id='{0}'""".format(int(id)))
         result = cur.fetchall()
         productos=[]
         for fila in result:
