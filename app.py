@@ -35,6 +35,34 @@ productos=[
 def home():
     """Principal"""
     return jsonify(productos)
+@app.route('/category', methods=['GET'])
+def category():
+    """Categoria"""
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("""select id, nombre from ecommerce.categorias""")
+        result = cur.fetchall()
+        categoria=[]
+        for fila in result:
+            categoria.append(fila)
+            print(fila)
+        return jsonify(categoria)
+    except Exception as ex:
+        return "Error"
+@app.route('/brand', methods=['GET'])
+def brand():
+    """Marca"""
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("""select id, nombre from ecommerce.marcas""")
+        result = cur.fetchall()
+        marca=[]
+        for fila in result:
+            marca.append(fila)
+            print(fila)
+        return jsonify(marca)
+    except Exception as ex:
+        return "Error"
 @app.route('/product', methods=['GET'])
 def products():
     """Principal"""
