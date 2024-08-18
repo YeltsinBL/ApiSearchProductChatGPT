@@ -2,52 +2,47 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
-from flask_mysqldb import MySQL
 from flask_swagger_ui import get_swaggerui_blueprint
+import pymysql.cursors
 
 load_dotenv()
 
+# Connect to the database
+connection = pymysql.connect(host=os.environ['MYSQL_HOST'],
+                             user=os.environ['MYSQL_USER'],
+                             password=os.environ['MYSQL_PASSWORD'],
+                             database=os.environ['MYSQL_DATABASE'],
+                             cursorclass=pymysql.cursors.DictCursor)
+
 app = Flask(__name__)
-app.config["MYSQL_USER"] = os.environ['MYSQL_USER']
-app.config["MYSQL_PASSWORD"] = os.environ['MYSQL_PASSWORD']
-app.config["MYSQL_HOST "] = os.environ['MYSQL_HOST']
-app.config["MYSQL_PORT "] = os.environ['MYSQL_PORT']
-app.config["MYSQL_DB"] = os.environ['MYSQL_DATABASE']
-app.config["MYSQL_CURSORCLASS"] = os.environ['MYSQL_CURSORCLASS']
 
-mysql=MySQL(app)
-
-
-# @app.route('/', methods=['GET'])
-# def home():
-#     """Principal"""
-#     return jsonify(productos)
 @app.route('/category', methods=['GET'])
 def category():
     """Categoria"""
     try:
-        cur = mysql.connection.cursor()
-        cur.execute("""select id, nombre from ecommerce.categorias""")
-        result = cur.fetchall()
-        categoria=[]
-        for fila in result:
-            categoria.append(fila)
-            print(fila)
-        return jsonify(categoria)
+        with connection.cursor() as cursor:
+            cursor.execute("select id, nombre from categorias")
+            result = cursor.fetchall()
+            print(result)
+            categoria=[]
+            for fila in result:
+                categoria.append(fila)
+                print(fila)
+            return jsonify(categoria)
     except Exception as ex:
         return "Error"
 @app.route('/brand', methods=['GET'])
 def brand():
     """Marca"""
     try:
-        cur = mysql.connection.cursor()
-        cur.execute("""select id, nombre from ecommerce.marcas""")
-        result = cur.fetchall()
-        marca=[]
-        for fila in result:
-            marca.append(fila)
-            print(fila)
-        return jsonify(marca)
+        with connection.cursor() as cursor:
+            cursor.execute("""select id, nombre from marcas""")
+            result = cursor.fetchall()
+            marca=[]
+            for fila in result:
+                marca.append(fila)
+                print(fila)
+            return jsonify(marca)
     except Exception as ex:
         return "Error"
 @app.route('/product', methods=['GET'])
@@ -79,17 +74,17 @@ def products():
             if request.args.get('popularidad'):
                 add_where += "order by popularidad desc"
                 #print(request.args.get('popularidad'))
-        cur = mysql.connection.cursor()
-        sql_consulta ="""select id, nombre, descripcion, precio, stock, en_oferta,\
-                descuento, popularidad from ecommerce.productos """+add_where
-        print(sql_consulta)
-        cur.execute(sql_consulta)
-        result = cur.fetchall()
-        productos=[]
-        for fila in result:
-            productos.append(fila)
-            #print(fila)
-        return jsonify(productos)
+        with connection.cursor() as cursor:
+            sql_consulta ="""select id, nombre, descripcion, precio, stock, en_oferta,\
+                    descuento, popularidad from productos """+add_where
+            print(sql_consulta)
+            cursor.execute(sql_consulta)
+            result = cursor.fetchall()
+            productos=[]
+            for fila in result:
+                productos.append(fila)
+                #print(fila)
+            return jsonify(productos)
     except Exception as ex:
         return "Error"
 
@@ -97,16 +92,15 @@ def products():
 def product_by_id(productId):
     """Principal"""
     try:
-        cur = mysql.connection.cursor()
-        cur.execute("""select id, nombre, descripcion, precio, stock, en_oferta, descuento, popularidad\
-                     from ecommerce.productos where id='{0}'""".format(int(productId)))
-        result = cur.fetchall()
-        # print(result)
-        producto={}
-        for fila in result:
-            producto=fila
-            print(producto)
-        return jsonify(producto)
+        with connection.cursor() as cursor:
+            cursor.execute("""select id, nombre, descripcion, precio, stock, en_oferta, descuento, popularidad\
+                        from productos where id='{0}'""".format(int(productId)))
+            result = cursor.fetchall()
+            producto={}
+            for fila in result:
+                producto=fila
+                print(producto)
+            return jsonify(producto)
     except Exception as ex:
         return "Error"
 
