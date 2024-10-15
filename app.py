@@ -39,7 +39,6 @@ def products():
         productos=[]
         for fila in result:
             productos.append(fila)
-            #print(fila)
         return jsonify(productos)
     except Exception as ex:
         return "Error"
@@ -52,7 +51,6 @@ def product_by_id(productId):
         producto={}
         for fila in result:
             producto=fila
-            print(producto)
         return jsonify(producto)
     except Exception as ex:
         return "Error"
@@ -71,9 +69,7 @@ def index():
 def get_products(category_id):
     """Ruta para obtener productos por categoría en formato JSON"""
     try:
-        print(category_id)
         productos = list_products(category_id)
-        print('get_products()', productos)
         return jsonify([dict(row) for row in productos])
     except Exception as ex:
         return jsonify({})
@@ -81,7 +77,6 @@ def get_products(category_id):
 def search():
     try:
         productos = search_all_products(request.args)
-        print('search()', productos)
         return render_template('response.html', products= productos)
     except Exception as ex:
         return jsonify({})

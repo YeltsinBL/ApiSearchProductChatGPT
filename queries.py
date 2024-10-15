@@ -13,7 +13,6 @@ def list_categories():
         with connection.cursor() as cursor:
             cursor.execute("select id, nombre from categorias")
             result = cursor.fetchall()
-            print('result: ',result)
             return result
     except Exception as ex:
         return "Error"
@@ -29,11 +28,9 @@ def list_brand():
 def list_products(category_id):
     """Obtener productos por categoría"""
     try:
-        print('list_products: ',category_id)
         with connection.cursor() as cursor:
             cursor.execute("""SELECT * FROM productos WHERE categoria_id = {0}""".format(int(category_id)))
             result = cursor.fetchall()
-            print('result: ',result)
             return result
     except Exception as ex:
         return "Error"
@@ -42,8 +39,6 @@ def search_all_products(request):
     try:
         add_where =""
         if request:
-            print(request)
-            # add_where="where "
             if request.get('nombre'):
                 add_where += "where nombre like '%{0}%' ".format(request.get('nombre'))
             if request.get('precio_min'):
@@ -64,16 +59,13 @@ def search_all_products(request):
                 add_where += "and descuento>0 "
             if request.get('popularidad'):
                 add_where += "order by popularidad desc"
-                #print(request.get('popularidad'))
         with connection.cursor() as cursor:
             sql_consulta ="""select p.id, p.nombre, p.descripcion, p.precio, p.stock, p.descuento, p.popularidad,  c.nombre as \"categianombre\", m.nombre as \"marcanombre\"\
             from ecommerce.productos p\
             left join ecommerce.categorias c on p.categoria_id=c.id\
             left join ecommerce.marcas m on p.marca_id = m.id """+add_where
-            print("sql_consulta", sql_consulta)
             cursor.execute(sql_consulta)
             result = cursor.fetchall()
-            print('products()',result)
             return result
     except Exception as ex:
         return "Error"
