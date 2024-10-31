@@ -50,6 +50,12 @@
             </label>
             <input type="text" name="search_text_max" id="search_text_max" class="form-control" placeholder="Precio Maximo">
         </div>
+        <div class="py-2">
+          <label for="medicion_inicio" class="form-label">
+              Consulta a ChatGPT
+          </label>
+          <input type="text" name="consulta" id="consulta" class="form-control" placeholder="Ingresa tu consulta">
+        </div>
         <div class="col-md-2 mt-4 py-2">
           <button type="submit" class="btn rounded-pill btn-primary" onclick="buscar('tbl_productos')">
             Buscar
@@ -72,7 +78,7 @@
                 <th>Nombre</th>
                 <th>Descripcion</th>
                 <th>Popularidad</th>
-                <th>Categia</th>
+                <th>Categoria</th>
                 <th>Marca</th>
                 <th>Stock</th>
                 <th>Precio</th>
@@ -86,7 +92,7 @@
                 <td>{{row.nombre}}</td>
                 <td>{{row.descripcion}}</td>
                 <td>{{row.popularidad}}</td>
-                <td>{{row.categianombre}}</td>
+                <td>{{row.categorianombre}}</td>
                 <td>{{row.marcanombre}}</td>
                 <td>{{row.stock}}</td>
                 <td>{{ "$%.2f"|format(row.precio) }}</td>

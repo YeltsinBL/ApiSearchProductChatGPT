@@ -1,18 +1,20 @@
 async function buscadorTableMedicion(tableId) {
-  let nombre,categoria_id, marca_id, precio_min, precio_max, url;
-  url = "/product";
+  let nombre,categoria_id, marca_id, precio_min, precio_max, consulta;
+  // url = "/product";
   nombre = document.getElementById("search_text").value
   categoria_id = document.getElementById("search_filter_category").value
   marca_id = document.getElementById("search_filter_brand").value
   precio_min = document.getElementById("search_text_min").value
   precio_max = document.getElementById("search_text_max").value
-  console.log(nombre,categoria_id, marca_id, precio_min, precio_max)
+  consulta = document.getElementById("consulta").value
+  console.log(nombre,categoria_id, marca_id, precio_min, precio_max, consulta)
   let query=""
   if(nombre != "") query +=`nombre=${nombre}&`
   if(categoria_id != "") query +=`categoria_id=${categoria_id}&`
   if(marca_id != "") query +=`marca_id=${marca_id}&`
   if(precio_min != "") query +=`precio_min=${precio_min}&`
   if(precio_max != "") query +=`precio_max=${precio_max}&`
+  if(consulta != "") query +=`consulta=${consulta}&`
   console.log(query)
 
   try {
