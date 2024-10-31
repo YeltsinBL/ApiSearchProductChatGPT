@@ -2,12 +2,12 @@
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, render_template
 from flask_swagger_ui import get_swaggerui_blueprint
-from queries import list_categories, list_brand, list_products, search_all_products, get_product_id
+from queries import list_categories, list_brand, list_products, search_all_products, get_product_id, getProductChatGPT
 
 load_dotenv()
 
 app = Flask(__name__)
-
+history = []
 @app.route('/category', methods=['GET'])
 def category():
     """Categoria"""
@@ -35,7 +35,7 @@ def brand():
 def products():
     """Principal"""
     try:
-        result = search_all_products(request.args)
+        result = search_all_products(request.args, history)
         productos=[]
         for fila in result:
             productos.append(fila)
@@ -61,7 +61,7 @@ def index():
     try:
         categories = list_categories()
         marcas = list_brand()
-        productos = search_all_products(request.args)
+        productos = search_all_products(request.args, history)
         return render_template('index.html', categories=categories, marcas= marcas, products= productos)
     except Exception as ex:
         return jsonify({})
@@ -76,7 +76,14 @@ def get_products(category_id):
 @app.route('/search')
 def search():
     try:
-        productos = search_all_products(request.args)
+        productos = search_all_products(request.args, history)
+        return render_template('response.html', products= productos)
+    except Exception as ex:
+        return jsonify({})
+@app.route('/product/searchChatGPT')
+def searchChatGPT():
+    try:
+        productos = getProductChatGPT(request.args.get("consulta"), history)
         return render_template('response.html', products= productos)
     except Exception as ex:
         return jsonify({})

@@ -139,6 +139,34 @@
         }
       }
     },
+    "/product/searchChatGPT":{
+      "get": {
+        "tags": ["Product"],
+        "summary": "List of all products",
+        "description": "Returns a list of products",
+        "produces": ["application/json"],
+        "parameters": [
+            {
+                "name": "consulta",
+                "in": "query",
+                "description": "Consulta para ChatGPT",
+                "required": true,
+                "type": "string"
+            }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Product"
+              }
+            }
+          }
+        }
+      }
+    },
     "/product/{productId}": {
       "get": {
         "tags": ["Product"],
